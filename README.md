@@ -8,4 +8,4 @@ Web-Server:
 
 GO 1.24.0
 
-- HTTP requests implemented using pure GO (net module)
+- HTTP requests implemented using pure GO
