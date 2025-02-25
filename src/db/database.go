@@ -8,13 +8,22 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func ConnectToDatabase(databaseName string) *sql.DB {
-	var connectionString = fmt.Sprintf("user=%v dbname=%v password=%v sslmode=disable", Admin.Username, databaseName, Admin.Password)
+type ConnectionManager struct {
+	DatabaseName string
+	instance     *sql.DB
+}
 
-	db, err := sql.Open("postgres", connectionString)
+func (manager *ConnectionManager) Connect() {
+	var connectionString = fmt.Sprintf("user=%v dbname=%v password=%v sslmode=disable", Admin.Username, manager.DatabaseName, Admin.Password)
+
+	instance, err := sql.Open("postgres", connectionString)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	return db
+	manager.instance = instance
+}
+
+func (manager *ConnectionManager) Close() {
+	manager.instance.Close()
 }

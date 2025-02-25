@@ -24,7 +24,9 @@ func initRoutes() {
 func main() {
 	initRoutes()
 
-	var storeDB = db.ConnectToDatabase("store")
+	var storeDB = db.ConnectionManager{DatabaseName: "Store"}
+	storeDB.Connect()
 	defer storeDB.Close()
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
