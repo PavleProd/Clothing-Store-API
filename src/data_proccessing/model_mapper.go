@@ -8,7 +8,7 @@ import (
 	"reflect"
 )
 
-func MapToModel[T any](params url.Values) (T, error) {
+func MapToModel[T any](params url.Values, tagType string) (T, error) {
 	var result T
 
 	var numFound int = 0
@@ -19,7 +19,7 @@ func MapToModel[T any](params url.Values) (T, error) {
 
 		// check if parameter for field was provided
 		var modelTypeField = modelReflectedType.Field(i)
-		var modelTagName = modelTypeField.Tag.Get("json")
+		var modelTagName = modelTypeField.Tag.Get(tagType)
 		var value = params.Get(modelTagName)
 		if value == "" {
 			continue

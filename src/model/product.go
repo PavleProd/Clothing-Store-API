@@ -5,7 +5,7 @@ type Product struct {
 	Category  string  `json:"category"`
 	Size      string  `json:"size"`
 	Gender    string  `json:"gender"`
-	IsForKids bool    `'json:"isForKids"`
+	IsForKids bool    `'json:"is_for_kids"`
 	Price     float32 `json:"price"`
 	Quantity  uint16  `json:"quantity"`
 }

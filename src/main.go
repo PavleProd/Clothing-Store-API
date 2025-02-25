@@ -8,8 +8,24 @@ import (
 	"online_store_api/src/model"
 )
 
+var StoreDb *db.ConnectionManager
+
 func getProductsHandler(w http.ResponseWriter, req *http.Request) {
-	var product, err = data_proccessing.MapToModel[model.Product](req.URL.Query())
+	if StoreDb == nil {
+		log.Panicln("db not available")
+		return
+	}
+
+	dataSet, err := StoreDb.Query("SELECT * FROM products") // TODO: QUERY BUILDER
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	log.Println(dataSet) // TODO: OBRADI REZULTAT
+
+	product, err := data_proccessing.MapToModel[model.Product](req.URL.Query(), "json")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -24,9 +40,13 @@ func initRoutes() {
 func main() {
 	initRoutes()
 
-	var storeDB = db.ConnectionManager{DatabaseName: "Store"}
-	storeDB.Connect()
-	defer storeDB.Close()
+	StoreDb = &db.ConnectionManager{DatabaseName: "store"}
+
+	err := StoreDb.Connect()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer StoreDb.Close()
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
