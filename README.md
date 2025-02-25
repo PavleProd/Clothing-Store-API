@@ -28,4 +28,4 @@ PostgreSQL 17
 
 ### 3. External Libraries
 
-- [PostgreSQL Driver](https://github.com/mtxr/vscode-sqltools/tree/dev/packages/driver.pg)
+- [PostgreSQL Driver](https://github.com/lib/pq)
