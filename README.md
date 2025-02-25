@@ -22,7 +22,7 @@ Model parameters:
 GO 1.24.0
 - Whole backend (TCP communication, Data Proccessing) implemented using pure GO
 
-Database:
+### 2. Database:
 
-- PostgreSQL 17
+PostgreSQL 17
 
