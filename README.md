@@ -1,6 +1,6 @@
 # Clothing Store API
 
-Simple RESTful API for online clothing store, including web-server implementation and database
+Simple RESTful API for online clothing store, including web-server implementation in **GO** and **PostgreSQL** database
 
 ## API
 
