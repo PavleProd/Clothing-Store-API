@@ -3,8 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
-	"online_store_api/data_proccessing"
-	"online_store_api/model"
+	"online_store_api/src/data_proccessing"
+	"online_store_api/src/db"
+	"online_store_api/src/model"
 )
 
 func getProductsHandler(w http.ResponseWriter, req *http.Request) {
@@ -22,6 +23,8 @@ func initRoutes() {
 
 func main() {
 	initRoutes()
-	log.Fatal(http.ListenAndServe(":8080", nil))
 
+	var storeDB = db.ConnectToDatabase("store")
+	defer storeDB.Close()
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

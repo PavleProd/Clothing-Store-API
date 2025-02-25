@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log"
 	"net/url"
-	"online_store_api/util"
+	"online_store_api/src/util"
 	"reflect"
 )
 

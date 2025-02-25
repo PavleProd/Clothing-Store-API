@@ -15,3 +15,6 @@ CREATE TABLE products (
     price DECIMAL(10, 2) NOT NULL,
     quantity INT NOT NULL CHECK (quantity > 0)
 );
+
+INSERT INTO products (name, category, size, gender, is_for_kids, price, quantity) VALUES ('Kaput 25', 'Elegantna odeća', 'XL', 'Unisex', TRUE, 199.09, 72);
+SELECT * FROM products;
