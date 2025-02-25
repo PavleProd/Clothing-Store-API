@@ -7,7 +7,35 @@ import (
 	"net/url"
 	"online_store_api/model"
 	"reflect"
+	"strconv"
 )
+
+func Convert(value string, targetType reflect.Type) (reflect.Value, error) {
+
+	var reflectedValue reflect.Value
+	var err error
+
+	switch targetType.Kind() {
+	case reflect.String:
+		reflectedValue = reflect.ValueOf(value)
+	case reflect.Float32, reflect.Float64:
+		var value, e = strconv.ParseFloat(value, targetType.Bits())
+		reflectedValue, err = reflect.ValueOf(value), e
+	case reflect.Bool:
+		var value, e = strconv.ParseBool(value)
+		reflectedValue, err = reflect.ValueOf(value), e
+	case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int, reflect.Int64:
+		var value, e = strconv.ParseInt(value, 10, targetType.Bits())
+		reflectedValue, err = reflect.ValueOf(value), e
+	case reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint, reflect.Uint64:
+		var value, e = strconv.ParseUint(value, 10, targetType.Bits())
+		reflectedValue, err = reflect.ValueOf(value), e
+	default:
+		err = errors.New("unexpected reflected type")
+	}
+
+	return reflectedValue.Convert(targetType), err
+}
 
 func MapToProduct(params url.Values) (model.Product, error) {
 	var result = model.Product{}
@@ -15,8 +43,8 @@ func MapToProduct(params url.Values) (model.Product, error) {
 	var numFound int = 0
 
 	var modelReflectedValue = reflect.ValueOf(&result).Elem()
-	var modelReflectedType = reflect.TypeOf(result)
-	for i := range modelReflectedType.NumField() {
+	var modelReflectedType = modelReflectedValue.Type()
+	for i := range modelReflectedValue.NumField() {
 
 		// check if parameter for field was provided
 		var modelTypeField = modelReflectedType.Field(i)
@@ -34,14 +62,13 @@ func MapToProduct(params url.Values) (model.Product, error) {
 		}
 
 		// check if provided value is convertible to model value
-		var reflectedValue = reflect.ValueOf(value)
-		if !reflectedValue.CanConvert(modelValueField.Type()) {
-			log.Printf("Can't convert value to tag %v", modelTagName)
-			continue
+		var convertedValue, err = Convert(value, modelValueField.Type())
+		if err != nil {
+			return result, err
 		}
 
 		// convert and set
-		modelValueField.Set(reflectedValue.Convert(modelValueField.Type()))
+		modelValueField.Set(convertedValue)
 		log.Printf("Converted Successfully %v", modelTagName)
 		numFound++
 	}
