@@ -16,8 +16,12 @@ func getProductsHandler(w http.ResponseWriter, req *http.Request) {
 	log.Println(product)
 }
 
+func initRoutes() {
+	http.HandleFunc("/api/v1/products", getProductsHandler)
+}
+
 func main() {
-	http.HandleFunc("/products", getProductsHandler)
+	initRoutes()
 	log.Fatal(http.ListenAndServe(":8080", nil))
 
 }
