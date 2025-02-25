@@ -26,3 +26,6 @@ GO 1.24.0
 
 PostgreSQL 17
 
+### 3. External Libraries
+
+- [PostgreSQL Driver](https://github.com/mtxr/vscode-sqltools/tree/dev/packages/driver.pg)
