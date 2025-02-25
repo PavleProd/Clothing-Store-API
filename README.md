@@ -6,26 +6,36 @@ Simple RESTful API for online clothing store.
 
 ### /api/v1/products
 
-- Resource for all clothing products
+Resource for all clothing products. Search can go by any combination of the resource parameters
 
 Model parameters:
-- "name" - string
-- "category" - string
-- "size" - "S", "M", "L", "XL", "XXL"
-- "price" - float32, in EUR
-- "quantity" - uint
+- "name": string
+- "category": string
+- "size": \["S", "M", "L", "XL", "XXL"]
+- "gender": \['Male', 'Female', 'Unisex']
+- "is_for_kids": bool
+- "price": decimal, in EUR
+- "quantity": unsigned int
 
-## Tech Stack
+GET Query example:
+`/api/v1/products?category=Sweater&is_for_kids=false&gender=Male`
 
-### 1. Web-Server
+## Components
+
+### Requirements
+- GO 1.24.0
+- PostgreSQL 17
+  
+### Web-Server
 
 GO 1.24.0
-- Whole backend (TCP communication, Data Proccessing) implemented using pure GO
 
-### 2. Database:
+Web-Server was implemented using pure GO. Only external library is a driver for PostgreSQL mentioned below.
+Some of the implemented functionalities:
 
-PostgreSQL 17
+- Converter from HTTP request to any data model, including request validator
+- Automatic SQL query builder from data model
 
-### 3. External Libraries
+## External Libraries
 
 - [PostgreSQL Driver](https://github.com/lib/pq)
