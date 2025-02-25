@@ -28,8 +28,6 @@ GET Query example:
   
 ### Web-Server
 
-GO 1.24.0
-
 Web-Server was implemented using pure GO. Only external library is a driver for PostgreSQL mentioned below.
 Some of the implemented functionalities:
 
