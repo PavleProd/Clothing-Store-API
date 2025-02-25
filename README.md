@@ -31,7 +31,7 @@ GET Query example:
 Web-Server was implemented using pure GO. Only external library is a driver for PostgreSQL mentioned below.
 Some of the implemented functionalities:
 
-- Converter from HTTP request to any data model, including request validator
+- Converter from HTTP request to any data model, including HTTP request validator
 - Automatic SQL query builder from data model
 
 ## External Libraries
