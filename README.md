@@ -17,8 +17,12 @@ Model parameters:
 
 ## Tech Stack
 
-Web-Server:
+### 1. Web-Server
 
 GO 1.24.0
-
 - Whole backend (TCP communication, Data Proccessing) implemented using pure GO
+
+Database:
+
+- PostgreSQL 17
+
