@@ -32,3 +32,7 @@ func Convert(value string, targetType reflect.Type) (reflect.Value, error) {
 
 	return reflectedValue.Convert(targetType), err
 }
+
+func IsDefaultValue(value any) bool {
+	return value == nil || reflect.DeepEqual(value, reflect.Zero(reflect.TypeOf(value)).Interface())
+}

@@ -8,39 +8,39 @@ import (
 	"reflect"
 )
 
-func MapToModel[T any](params url.Values, tagType string) (T, error) {
+func MapToModel[T any](params url.Values) (T, error) {
 	var result T
 
 	var numFound int = 0
 
-	var modelReflectedValue = reflect.ValueOf(&result).Elem()
-	var modelReflectedType = modelReflectedValue.Type()
-	for i := range modelReflectedValue.NumField() {
+	var reflectedModelValue = reflect.ValueOf(&result).Elem()
+	var reflectedModelType = reflectedModelValue.Type()
+	for i := range reflectedModelValue.NumField() {
 
 		// check if parameter for field was provided
-		var modelTypeField = modelReflectedType.Field(i)
-		var modelTagName = modelTypeField.Tag.Get(tagType)
-		var value = params.Get(modelTagName)
+		var reflectedFieldType = reflectedModelType.Field(i)
+		var reflectedFieldName = reflectedFieldType.Tag.Get(util.JSON_TAG)
+		var value = params.Get(reflectedFieldName)
 		if value == "" {
 			continue
 		}
 
 		// check if we can set model field
-		var modelValueField = modelReflectedValue.Field(i)
-		if !modelValueField.CanSet() {
-			log.Printf("Tag value can't be set %v", modelTagName)
+		var reflectedFieldValue = reflectedModelValue.Field(i)
+		if !reflectedFieldValue.CanSet() {
+			log.Printf("Tag value can't be set %v", reflectedFieldName)
 			continue
 		}
 
 		// check if provided value is convertible to model value
-		var convertedValue, err = util.Convert(value, modelValueField.Type())
+		var convertedValue, err = util.Convert(value, reflectedFieldValue.Type())
 		if err != nil {
 			return result, err
 		}
 
 		// convert and set
-		modelValueField.Set(convertedValue)
-		log.Printf("converted successfully: %v", modelTagName)
+		reflectedFieldValue.Set(convertedValue)
+		log.Printf("converted successfully: %v", reflectedFieldName)
 		numFound++
 	}
 

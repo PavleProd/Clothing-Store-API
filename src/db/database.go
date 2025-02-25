@@ -29,7 +29,7 @@ func (manager *ConnectionManager) Close() {
 	manager.instance.Close()
 }
 
-func (manager *ConnectionManager) Query(query string) (util.DataSet, error) {
+func (manager *ConnectionManager) Read(query string) (util.DataSet, error) {
 	var result util.DataSet
 
 	resultSet, err := manager.instance.Query(query)
