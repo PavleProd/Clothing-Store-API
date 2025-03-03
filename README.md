@@ -20,6 +20,14 @@ Model parameters:
 GET Query example:
 `/api/v1/products?category=Sweater&is_for_kids=false&gender=Male`
 
+## Deployment
+
+To deploy server locally you need to do the following:
+1. Download the repository
+2. Open Powershell and navigate to repository root folder
+3. Run following command: `docker compose up --build`
+4. You can access API on port 8080, database will be already initialized with data from `db/init/products_init.csv`
+
 ## Components
 
 ### Requirements
