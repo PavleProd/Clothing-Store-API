@@ -15,3 +15,8 @@ CREATE TABLE products (
     price DECIMAL(10, 2) NOT NULL,
     quantity INT NOT NULL CHECK (quantity > 0)
 );
+
+COPY products(name, category, size, gender, is_for_kids, price, quantity)
+FROM '/docker-entrypoint-initdb.d/products_init.csv'
+DELIMITER ','
+CSV HEADER;

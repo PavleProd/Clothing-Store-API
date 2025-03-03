@@ -8,6 +8,7 @@ import (
 	"online_store_api/src/db"
 	"online_store_api/src/model"
 	"online_store_api/src/util"
+	"os"
 )
 
 var StoreDb *db.ConnectionManager
@@ -33,7 +34,9 @@ func getProductsHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(dataSet)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "\t")
+	enc.Encode(dataSet)
 }
 
 func initRoutes() {
@@ -43,9 +46,9 @@ func initRoutes() {
 func main() {
 	initRoutes()
 
-	StoreDb = &db.ConnectionManager{DatabaseName: "store"}
+	StoreDb = &db.ConnectionManager{}
 
-	err := StoreDb.Connect()
+	err := StoreDb.Connect(os.Getenv("STORE_DB_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}

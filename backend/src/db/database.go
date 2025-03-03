@@ -2,21 +2,17 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"online_store_api/src/util"
 
 	_ "github.com/lib/pq"
 )
 
 type ConnectionManager struct {
-	DatabaseName string
-	instance     *sql.DB
+	instance *sql.DB
 }
 
-func (manager *ConnectionManager) Connect() error {
-	var connectionString = fmt.Sprintf("user=%v dbname=%v password=%v sslmode=disable", Admin.Username, manager.DatabaseName, Admin.Password)
-
-	instance, err := sql.Open("postgres", connectionString)
+func (manager *ConnectionManager) Connect(connectionURL string) error {
+	instance, err := sql.Open("postgres", connectionURL)
 	if err != nil {
 		return err
 	}
