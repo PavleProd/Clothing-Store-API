@@ -26,7 +26,9 @@ To deploy server locally you need to do the following:
 1. Download the repository
 2. Open Powershell and navigate to repository root folder
 3. Run following command: `docker compose up --build`
-4. You can access API on port 8080, database will be already initialized with data from `db/init/products_init.csv`
+
+- You can access API on port 8080
+- Database will be already initialized with data from `db/init/products_init.csv`
 
 ## Components
 
