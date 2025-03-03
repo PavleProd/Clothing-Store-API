@@ -22,6 +22,7 @@ func getProductsHandler(w http.ResponseWriter, req *http.Request) {
 	product, err := data_proccessing.MapToModel[model.Product](req.URL.Query())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	query := db.BuildReadQuery(product, util.PRODUCTS_TABLE_NAME)
