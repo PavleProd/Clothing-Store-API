@@ -86,7 +86,7 @@ func (handler *ProductsHandler) handlePost(writer http.ResponseWriter, request *
 
 	err = handler.database.Write(query)
 	if err != nil {
-		slog.Error("database transaction failder", "error", err.Error())
+		slog.Error("database transaction failed", "error", err.Error())
 		return http.StatusInternalServerError, err
 	}
 

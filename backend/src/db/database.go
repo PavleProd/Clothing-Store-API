@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"log"
 	"online_store_api/src/util"
 
 	_ "github.com/lib/pq"
@@ -38,7 +37,6 @@ func (manager *DatabaseManager) Read(query string) (util.DataSet, error) {
 }
 
 func (manager *DatabaseManager) Write(query string) error {
-	result, err := manager.instance.Exec(query)
-	log.Println(result)
+	_, err := manager.instance.Exec(query)
 	return err
 }
