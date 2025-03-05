@@ -38,7 +38,7 @@ Model parameters:
 - "category": string
 - "size": \["S", "M", "L", "XL", "XXL"]
 - "gender": \['Male', 'Female', 'Unisex']
-- "is_for_kids": bool
+- "is_for_kids": bool (Default: false)
 - "price": decimal, in EUR
 - "quantity": unsigned int
 
