@@ -5,7 +5,7 @@ RESTful API for online clothing store, including web-server implementation in **
 ## Deployment
 
 To deploy server locally you need to do the following:
-1. Download the repository
+1. Clone the repository
 2. Open Powershell and navigate to repository root folder
 3. Run following command: `docker compose up --build`
 
