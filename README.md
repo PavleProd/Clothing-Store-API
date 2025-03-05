@@ -44,7 +44,7 @@ Model parameters:
 
 ### Using API
 
-I recommend [PostMan](https://www.postman.com/downloads/) for testing API
+[PostMan](https://www.postman.com/downloads/) is recommended for testing this API
 
 1. GET Query example:
 URL: `localhost:8080/api/v1/products?category=Sweater&is_for_kids=false&gender=Male`
