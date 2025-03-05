@@ -2,21 +2,6 @@
 
 RESTful API for online clothing store, including web-server implementation in **GO** and **PostgreSQL** database
 
-## API
-
-### /api/v1/products
-
-Resource for all clothing products. Search can go by any combination of the resource parameters
-
-Model parameters:
-- "name": string
-- "category": string
-- "size": \["S", "M", "L", "XL", "XXL"]
-- "gender": \['Male', 'Female', 'Unisex']
-- "is_for_kids": bool
-- "price": decimal, in EUR
-- "quantity": unsigned int
-
 ## Deployment
 
 To deploy server locally you need to do the following:
@@ -41,7 +26,22 @@ Some of the implemented functionalities:
 - Converter from HTTP request to any data model, including HTTP request validator
 - Automatic SQL query builder from data model
 
-## Using API
+## API
+
+### /api/v1/products
+
+Resource for all clothing products. Search can go by any combination of the resource parameters
+
+Model parameters:
+- "name": string
+- "category": string
+- "size": \["S", "M", "L", "XL", "XXL"]
+- "gender": \['Male', 'Female', 'Unisex']
+- "is_for_kids": bool
+- "price": decimal, in EUR
+- "quantity": unsigned int
+
+### Using API
 
 I recommend [PostMan](https://www.postman.com/downloads/) for testing API
 
