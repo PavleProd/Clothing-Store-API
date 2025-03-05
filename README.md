@@ -5,10 +5,10 @@ RESTful API for online clothing store, including web-server implementation in **
 ## Deployment
 
 To deploy server locally you need to do the following:
-0. Have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
-1. Clone the repository
-2. Open Powershell and navigate to repository root folder
-3. Run following command: `docker compose up --build`
+1. Have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+2. Clone the repository
+3. Open Powershell and navigate to repository root folder
+4. Run following command: `docker compose up --build`
 
 - You can access API on port 8080
 - Database will be already initialized with data from `db/init/products_init.csv`
