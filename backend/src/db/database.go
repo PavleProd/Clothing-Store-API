@@ -7,11 +7,11 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type ConnectionManager struct {
+type DatabaseManager struct {
 	instance *sql.DB
 }
 
-func (manager *ConnectionManager) Connect(connectionURL string) error {
+func (manager *DatabaseManager) Connect(connectionURL string) error {
 	instance, err := sql.Open("postgres", connectionURL)
 	if err != nil {
 		return err
@@ -21,11 +21,11 @@ func (manager *ConnectionManager) Connect(connectionURL string) error {
 	return nil
 }
 
-func (manager *ConnectionManager) Close() {
+func (manager *DatabaseManager) Close() {
 	manager.instance.Close()
 }
 
-func (manager *ConnectionManager) Read(query string) (util.DataSet, error) {
+func (manager *DatabaseManager) Read(query string) (util.DataSet, error) {
 	var result util.DataSet
 
 	resultSet, err := manager.instance.Query(query)
