@@ -17,9 +17,6 @@ Model parameters:
 - "price": decimal, in EUR
 - "quantity": unsigned int
 
-GET Query example:
-`/api/v1/products?category=Sweater&is_for_kids=false&gender=Male`
-
 ## Deployment
 
 To deploy server locally you need to do the following:
@@ -43,6 +40,30 @@ Some of the implemented functionalities:
 
 - Converter from HTTP request to any data model, including HTTP request validator
 - Automatic SQL query builder from data model
+
+## Using API
+
+I recommend [PostMan](https://www.postman.com/downloads/) for testing API
+
+GET Query example:
+URL: `localhost:8080/api/v1/products?category=Sweater&is_for_kids=false&gender=Male`
+
+POST Query example:
+
+URL: `localhost:8080/api/v1/products`
+
+Body:
+```
+{
+    "category": "Shirts",
+    "gender": "Male",
+    "is_for_kids": false,
+    "name": "Polo Shirt",
+    "price": 64.24,
+    "quantity": 3,
+    "size": "S"
+}
+```
 
 ## External Libraries
 
