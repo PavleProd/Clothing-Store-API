@@ -40,7 +40,7 @@ func MapToModel[T any](params url.Values) (T, error) {
 
 		// convert and set
 		reflectedFieldValue.Set(convertedValue)
-		slog.Info("converted to field successfully", "field", reflectedFieldName)
+		slog.Info("converted to field successfully", "field", reflectedFieldName, "value", convertedValue)
 		numFound++
 	}
 

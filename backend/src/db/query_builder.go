@@ -1,6 +1,7 @@
 package db
 
 import (
+	"errors"
 	"fmt"
 	"online_store_api/src/util"
 	"reflect"
@@ -18,7 +19,7 @@ func BuildReadQuery[T any](model T, tableName string) string {
 	var reflectedModelType = reflectedModelValue.Type()
 	for i := range reflectedModelValue.NumField() {
 		var reflectedFieldValue = reflectedModelValue.Field(i).Interface()
-		if util.IsDefaultValue(reflectedFieldValue) {
+		if util.IsDefaultOrZeroValueExcludingBool(reflectedFieldValue) {
 			continue
 		}
 
@@ -41,4 +42,43 @@ func BuildReadQuery[T any](model T, tableName string) string {
 	}
 
 	return queryBuilder.String()
+}
+
+// INSERT INTO TABLE (field1, field2)
+// VALUES (value1, value2)
+func BuildInsertQuery[T any](model T, tableName string) (string, error) {
+	var queryBuilder strings.Builder
+
+	var slicedFields = util.GetModelSlicedFields(model)
+	for i := range slicedFields {
+		if util.IsDefaultOrZeroValueExcludingBool(slicedFields[i].Value) {
+			var errorMessage = fmt.Sprintf("field %v not defined", slicedFields[i].Name)
+			return "", errors.New(errorMessage)
+		}
+	}
+
+	queryBuilder.WriteString("INSERT INTO ")
+	queryBuilder.WriteString(tableName)
+
+	queryBuilder.WriteString(" (")
+	for i := range slicedFields {
+		if i != 0 {
+			queryBuilder.WriteString(", ")
+		}
+		queryBuilder.WriteString(slicedFields[i].Tag)
+	}
+	queryBuilder.WriteString(")")
+
+	queryBuilder.WriteString(" VALUES (")
+	for i := range slicedFields {
+		if i != 0 {
+			queryBuilder.WriteString(", ")
+		}
+
+		var strValue = fmt.Sprint("'", slicedFields[i].Value, "'")
+		queryBuilder.WriteString(strValue)
+	}
+	queryBuilder.WriteString(")")
+
+	return queryBuilder.String(), nil
 }

@@ -6,16 +6,17 @@ import (
 	"net/http"
 	"online_store_api/src/db"
 	"online_store_api/src/model"
-	"online_store_api/src/util"
 )
 
 type ProductsHandler struct {
-	database *db.DatabaseManager
+	database  *db.DatabaseManager
+	tableName string
 }
 
-func NewProductsHandler(database *db.DatabaseManager) *ProductsHandler {
+func NewProductsHandler(database *db.DatabaseManager, tableName string) *ProductsHandler {
 	return &ProductsHandler{
-		database: database,
+		database:  database,
+		tableName: tableName,
 	}
 }
 
@@ -25,42 +26,70 @@ func (handler *ProductsHandler) ServeHTTP(writer http.ResponseWriter, request *h
 		return
 	}
 
+	var err error = nil
+	var errorCode int = http.StatusOK
+
 	switch request.Method {
 	case "GET":
-		handler.handleGet(writer, request)
-		slog.Error("HTTP method not supported", "method", request.Method)
+		errorCode, err = handler.handleGet(writer, request)
 	case "POST":
-		handler.handlePost(writer, request)
+		errorCode, err = handler.handlePost(writer, request)
 	default:
 		http.Error(writer, "method not supported", http.StatusMethodNotAllowed)
 		slog.Error("HTTP method not supported", "method", request.Method)
 		return
 	}
 
-	slog.Info("processed %v query: %v", request.Method, request.URL)
-}
-
-func (handler *ProductsHandler) handleGet(writer http.ResponseWriter, request *http.Request) {
-	product, err := MapToModel[model.Product](request.URL.Query())
 	if err != nil {
-		http.Error(writer, err.Error(), http.StatusBadRequest)
+		http.Error(writer, err.Error(), errorCode)
 		return
 	}
 
-	query := db.BuildReadQuery(product, util.PRODUCTS_TABLE_NAME)
+	slog.Info("sucessfuly proccessed request", "Method", request.Method, "URL", request.URL)
+}
+
+func (handler *ProductsHandler) handleGet(writer http.ResponseWriter, request *http.Request) (int, error) {
+	product, err := MapToModel[model.Product](request.URL.Query())
+	if err != nil {
+		return http.StatusBadRequest, err
+	}
+
+	query := db.BuildReadQuery(product, handler.tableName)
 
 	dataSet, err := handler.database.Read(query)
 	if err != nil {
 		slog.Error(err.Error())
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
-		return
+		return http.StatusInternalServerError, err
 	}
 
 	enc := json.NewEncoder(writer)
 	enc.SetIndent("", "\t")
 	enc.Encode(dataSet)
+
+	return http.StatusOK, nil
 }
 
-func (handler *ProductsHandler) handlePost(writer http.ResponseWriter, request *http.Request) {
+func (handler *ProductsHandler) handlePost(writer http.ResponseWriter, request *http.Request) (int, error) {
+	var product model.Product
 
+	err := json.NewDecoder(request.Body).Decode(&product)
+	if err != nil {
+		slog.Error("json parse failed", "error", err.Error())
+		return http.StatusBadRequest, err
+	}
+
+	query, err := db.BuildInsertQuery(product, handler.tableName)
+	if err != nil {
+		slog.Error("building insert querty failed", "error", err.Error())
+		return http.StatusInternalServerError, err
+	}
+
+	err = handler.database.Write(query)
+	if err != nil {
+		slog.Error("database transaction failder", "error", err.Error())
+		return http.StatusInternalServerError, err
+	}
+
+	slog.Info("transaction with query successful", "query", query)
+	return http.StatusOK, nil
 }
