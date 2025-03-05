@@ -2,7 +2,7 @@ package data_proccessing
 
 import (
 	"encoding/json"
-	"log"
+	"log/slog"
 	"net/http"
 	"online_store_api/src/db"
 	"online_store_api/src/model"
@@ -21,17 +21,23 @@ func NewProductsHandler(database *db.DatabaseManager) *ProductsHandler {
 
 func (handler *ProductsHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	if handler.database == nil {
-		log.Println("database not available")
+		slog.Error("database not available")
 		return
 	}
 
 	switch request.Method {
 	case "GET":
 		handler.handleGet(writer, request)
+		slog.Error("HTTP method not supported", "method", request.Method)
+	case "POST":
+		handler.handlePost(writer, request)
 	default:
 		http.Error(writer, "method not supported", http.StatusMethodNotAllowed)
-		log.Printf("HTTP method \"%v\" not supported\n", request.Method)
+		slog.Error("HTTP method not supported", "method", request.Method)
+		return
 	}
+
+	slog.Info("processed %v query: %v", request.Method, request.URL)
 }
 
 func (handler *ProductsHandler) handleGet(writer http.ResponseWriter, request *http.Request) {
@@ -42,11 +48,10 @@ func (handler *ProductsHandler) handleGet(writer http.ResponseWriter, request *h
 	}
 
 	query := db.BuildReadQuery(product, util.PRODUCTS_TABLE_NAME)
-	log.Printf("PROCCESSED QUERY: %v", query)
 
 	dataSet, err := handler.database.Read(query)
 	if err != nil {
-		log.Println(err)
+		slog.Error(err.Error())
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -54,4 +59,8 @@ func (handler *ProductsHandler) handleGet(writer http.ResponseWriter, request *h
 	enc := json.NewEncoder(writer)
 	enc.SetIndent("", "\t")
 	enc.Encode(dataSet)
+}
+
+func (handler *ProductsHandler) handlePost(writer http.ResponseWriter, request *http.Request) {
+
 }

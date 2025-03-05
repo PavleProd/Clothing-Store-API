@@ -2,7 +2,7 @@ package data_proccessing
 
 import (
 	"errors"
-	"log"
+	"log/slog"
 	"net/url"
 	"online_store_api/src/util"
 	"reflect"
@@ -28,7 +28,7 @@ func MapToModel[T any](params url.Values) (T, error) {
 		// check if we can set model field
 		var reflectedFieldValue = reflectedModelValue.Field(i)
 		if !reflectedFieldValue.CanSet() {
-			log.Printf("Tag value can't be set %v", reflectedFieldName)
+			slog.Error("Field is immutable", "field", reflectedFieldName)
 			continue
 		}
 
@@ -40,7 +40,7 @@ func MapToModel[T any](params url.Values) (T, error) {
 
 		// convert and set
 		reflectedFieldValue.Set(convertedValue)
-		log.Printf("converted successfully: %v", reflectedFieldName)
+		slog.Info("converted to field successfully", "field", reflectedFieldName)
 		numFound++
 	}
 
