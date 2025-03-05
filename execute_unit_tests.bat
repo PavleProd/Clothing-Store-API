@@ -1,0 +1,6 @@
+@echo off
+cd ./backend
+echo Unit tests started...
+go test -v ./...
+echo Unit tests have finished execution!
+pause
