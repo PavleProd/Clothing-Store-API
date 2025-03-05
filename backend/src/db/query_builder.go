@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// SELECT * FROM TABLE WHERE param1 = value1 AND param2 = value2
 func BuildReadQuery[T any](model T, tableName string) string {
 	var queryBuilder strings.Builder
 
