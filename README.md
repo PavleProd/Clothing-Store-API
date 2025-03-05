@@ -45,10 +45,14 @@ Some of the implemented functionalities:
 
 I recommend [PostMan](https://www.postman.com/downloads/) for testing API
 
-GET Query example:
+1. GET Query example:
 URL: `localhost:8080/api/v1/products?category=Sweater&is_for_kids=false&gender=Male`
 
-POST Query example:
+The Response will be either: 
+- JSON array of the requested resource rows
+- Appropriate Error Code with message  
+
+2. POST Query example:
 
 URL: `localhost:8080/api/v1/products`
 
@@ -64,6 +68,10 @@ Body:
     "size": "S"
 }
 ```
+
+The Response will be either:
+- StatusOK (200) if POST was successful
+- Appropriate Error Code with message  
 
 ## External Libraries
 
