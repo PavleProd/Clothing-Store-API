@@ -72,7 +72,11 @@ Body:
 
 The Response will be either:
 - StatusOK (200) if POST was successful
-- Appropriate Error Code with message  
+- Appropriate Error Code with message
+
+## Testing
+
+You can execute all unit tests available by running `execute_unit_tests.bat` 
 
 ## External Libraries
 
