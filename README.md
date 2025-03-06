@@ -21,8 +21,7 @@ To deploy server locally you need to do the following:
   
 ### Web-Server
 
-Web-Server was implemented using pure GO. Only external library is a driver for PostgreSQL mentioned below.
-Some of the implemented functionalities:
+Goal of this project was to write web-server mostly in pure GO. Some of the implemented functionalities:
 
 - Converter from HTTP request to any data model, including HTTP request validator
 - Simplified ORM with query builders with
@@ -34,6 +33,10 @@ Some of the implemented functionalities:
 
 Resource for all clothing products. Search can go by any combination of the resource parameters
 
+Available requests:
+1. **GET**: query clothing products with filters (needs minimum User authorization)
+2. **POST**: add new clothing product (needs minimum Admin authorization)
+
 Model parameters:
 - "name": string
 - "category": string
@@ -43,42 +46,30 @@ Model parameters:
 - "price": decimal, in EUR
 - "quantity": unsigned int
 
-### Using API
+### /api/v1/login
+
+Resource for authorization that works with [JWT](https://jwt.io/)
+
+Available request:
+1. **POST**: authorization that takes username and password and returns JWT token
+
+Model parameters:
+- "username": unique string
+- "password": string
+- "role": int (0 - user, 1 - admin)
+
+## Using API
 
 [PostMan](https://www.postman.com/downloads/) is recommended for testing this API
 
-1. GET Query example:
-URL: `localhost:8080/api/v1/products?category=Sweater&is_for_kids=false&gender=Male`
-
-The Response will be either: 
-- JSON array of the requested resource rows
-- Appropriate Error Code with message  
-
-2. POST Query example:
-
-URL: `localhost:8080/api/v1/products`
-
-Body:
-```
-{
-    "category": "Shirts",
-    "gender": "Male",
-    "is_for_kids": false,
-    "name": "Polo Shirt",
-    "price": 64.24,
-    "quantity": 3,
-    "size": "S"
-}
-```
-
-The Response will be either:
-- StatusOK (200) if POST was successful
-- Appropriate Error Code with message
+You can create your requests with API described above.
+You can also import already created Postman Collection for testing this api in `testing/online_store_api.postman_collection.json` 
 
 ## Testing
 
-You can execute all unit tests available by running `execute_unit_tests.bat` 
+You can execute all unit tests available by running `testing/execute_unit_tests.bat` 
 
 ## External Libraries
 
 - [PostgreSQL Driver](https://github.com/lib/pq)
+- [JWT Package](https://pkg.go.dev/github.com/golang-jwt/jwt/v5@v5.2.1)
