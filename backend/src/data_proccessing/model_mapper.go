@@ -33,7 +33,7 @@ func MapToModel[T any](params url.Values) (T, error) {
 		}
 
 		// check if provided value is convertible to model value
-		var convertedValue, err = util.Convert(value, reflectedFieldValue.Type())
+		var convertedValue, err = util.ConvertFromString(value, reflectedFieldValue.Type())
 		if err != nil {
 			return result, err
 		}

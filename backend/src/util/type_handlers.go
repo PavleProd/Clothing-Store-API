@@ -2,11 +2,12 @@ package util
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 )
 
-func Convert(value string, targetType reflect.Type) (reflect.Value, error) {
+func ConvertFromString(value string, targetType reflect.Type) (reflect.Value, error) {
 
 	var reflectedValue reflect.Value
 	var err error
@@ -28,6 +29,10 @@ func Convert(value string, targetType reflect.Type) (reflect.Value, error) {
 		reflectedValue, err = reflect.ValueOf(value), e
 	default:
 		err = errors.New("unexpected reflected type")
+	}
+
+	if !reflectedValue.Type().ConvertibleTo(targetType) {
+		return reflectedValue, fmt.Errorf("cannot convert %v to %v", value, targetType)
 	}
 
 	return reflectedValue.Convert(targetType), err
