@@ -7,15 +7,15 @@ import (
 	"online_store_api/src/db"
 )
 
+const PRODUCTS_TABLE_NAME = "products"
+
 type ProductsHandler struct {
-	database  *db.DatabaseManager
-	tableName string
+	database *db.DatabaseManager
 }
 
-func NewProductsHandler(database *db.DatabaseManager, tableName string) *ProductsHandler {
+func NewProductsHandler(database *db.DatabaseManager) *ProductsHandler {
 	return &ProductsHandler{
-		database:  database,
-		tableName: tableName,
+		database: database,
 	}
 }
 
@@ -49,7 +49,7 @@ func (handler *ProductsHandler) ServeHTTP(writer http.ResponseWriter, request *h
 
 func (handler *ProductsHandler) handleGet(writer http.ResponseWriter, request *http.Request) (int, error) {
 	data := ConvertURL(request)
-	preparedQuery := db.BuildSelectQuery(data, handler.tableName)
+	preparedQuery := db.BuildSelectQuery(data, PRODUCTS_TABLE_NAME)
 
 	dataSet, err := handler.database.Read(preparedQuery)
 	if err != nil {
@@ -71,7 +71,7 @@ func (handler *ProductsHandler) handlePost(writer http.ResponseWriter, request *
 		return http.StatusBadRequest, err
 	}
 
-	preparedQuery := db.BuildInsertQuery(data, handler.tableName)
+	preparedQuery := db.BuildInsertQuery(data, PRODUCTS_TABLE_NAME)
 	err = handler.database.Write(preparedQuery)
 	if err != nil {
 		slog.Error("database transaction failed", "error", err.Error())

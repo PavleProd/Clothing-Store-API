@@ -5,14 +5,13 @@ import (
 	"net/http"
 	"online_store_api/src/data_proccessing"
 	"online_store_api/src/db"
-	"online_store_api/src/util"
 	"os"
 )
 
 var StoreDb *db.DatabaseManager
 
 func initRoutes() {
-	var productsHandler = data_proccessing.NewProductsHandler(StoreDb, util.PRODUCTS_TABLE_NAME)
+	var productsHandler = data_proccessing.NewProductsHandler(StoreDb)
 	http.Handle("/api/v1/products", productsHandler)
 }
 
