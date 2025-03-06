@@ -2,7 +2,6 @@ package data_proccessing
 
 import (
 	"encoding/json"
-	"log"
 	"log/slog"
 	"net/http"
 	"online_store_api/src/db"
@@ -50,9 +49,9 @@ func (handler *ProductsHandler) ServeHTTP(writer http.ResponseWriter, request *h
 
 func (handler *ProductsHandler) handleGet(writer http.ResponseWriter, request *http.Request) (int, error) {
 	data := ConvertURL(request)
-	query := db.BuildSelectQuery(data, handler.tableName)
+	preparedQuery := db.BuildSelectQuery(data, handler.tableName)
 
-	dataSet, err := handler.database.Read(query)
+	dataSet, err := handler.database.Read(preparedQuery)
 	if err != nil {
 		slog.Error(err.Error())
 		return http.StatusInternalServerError, err
@@ -72,14 +71,13 @@ func (handler *ProductsHandler) handlePost(writer http.ResponseWriter, request *
 		return http.StatusBadRequest, err
 	}
 
-	query := db.BuildInsertQuery(data, handler.tableName)
-	log.Println(query)
-	err = handler.database.Write(query)
+	preparedQuery := db.BuildInsertQuery(data, handler.tableName)
+	err = handler.database.Write(preparedQuery)
 	if err != nil {
 		slog.Error("database transaction failed", "error", err.Error())
 		return http.StatusInternalServerError, err
 	}
 
-	slog.Info("transaction with query successful", "query", query)
+	slog.Info("transaction with query successful", "query", preparedQuery)
 	return http.StatusOK, nil
 }

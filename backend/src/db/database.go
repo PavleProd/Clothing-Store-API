@@ -25,18 +25,28 @@ func (manager *DatabaseManager) Close() {
 	manager.instance.Close()
 }
 
-func (manager *DatabaseManager) Read(query string) (util.DataSet, error) {
-	var result util.DataSet
-
-	resultSet, err := manager.instance.Query(query)
+func (manager *DatabaseManager) Read(preparedQuery PreparedQuery) (util.DataSet, error) {
+	statement, err := manager.instance.Prepare(preparedQuery.query)
 	if err != nil {
-		return result, err
+		return util.DataSet{}, err
+	}
+	defer statement.Close()
+
+	resultSet, err := statement.Query(preparedQuery.values...)
+	if err != nil {
+		return util.DataSet{}, err
 	}
 
 	return ConvertToDataSet(resultSet)
 }
 
-func (manager *DatabaseManager) Write(query string) error {
-	_, err := manager.instance.Exec(query)
+func (manager *DatabaseManager) Write(preparedQuery PreparedQuery) error {
+	statement, err := manager.instance.Prepare(preparedQuery.query)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(preparedQuery.values...)
 	return err
 }
