@@ -8,17 +8,20 @@ import (
 	"os"
 )
 
-var StoreDb *db.DatabaseManager
+var database *db.DatabaseManager
 
 func initRoutes() {
-	var productsHandler = data_proccessing.NewProductsHandler(StoreDb)
+	var productsHandler = data_proccessing.NewProductsHandler(database)
 	http.Handle("/api/v1/products", productsHandler)
+
+	var loginHandler = data_proccessing.NewLoginHandler(database)
+	http.Handle("/api/v1/login", loginHandler)
 }
 
 func initDB() {
-	StoreDb = &db.DatabaseManager{}
+	database = &db.DatabaseManager{}
 
-	err := StoreDb.Connect(os.Getenv("STORE_DB_URL"))
+	err := database.Connect(os.Getenv("STORE_DB_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,7 +29,7 @@ func initDB() {
 
 func main() {
 	initDB()
-	defer StoreDb.Close()
+	defer database.Close()
 
 	initRoutes()
 	log.Fatal(http.ListenAndServe(":8080", nil))

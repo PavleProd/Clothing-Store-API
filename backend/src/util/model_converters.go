@@ -1,14 +1,11 @@
-package data_proccessing
+package util
 
 import (
-	"errors"
 	"log/slog"
-	"net/url"
-	"online_store_api/src/util"
 	"reflect"
 )
 
-func MapToModel[T any](params url.Values) (T, error) {
+func MapToModel[T any](data DataRecord) (T, error) {
 	var result T
 
 	var numFound int = 0
@@ -19,9 +16,9 @@ func MapToModel[T any](params url.Values) (T, error) {
 
 		// check if parameter for field was provided
 		var reflectedFieldType = reflectedModelType.Field(i)
-		var reflectedFieldName = reflectedFieldType.Tag.Get(util.JSON_TAG)
-		var value = params.Get(reflectedFieldName)
-		if value == "" {
+		var reflectedFieldName = reflectedFieldType.Tag.Get(JSON_TAG)
+		var value, ok = data[reflectedFieldName]
+		if !ok {
 			continue
 		}
 
@@ -33,7 +30,7 @@ func MapToModel[T any](params url.Values) (T, error) {
 		}
 
 		// check if provided value is convertible to model value
-		var convertedValue, err = util.ConvertFromString(value, reflectedFieldValue.Type())
+		var convertedValue, err = ConvertFromString(value, reflectedFieldValue.Type())
 		if err != nil {
 			return result, err
 		}
@@ -42,11 +39,6 @@ func MapToModel[T any](params url.Values) (T, error) {
 		reflectedFieldValue.Set(convertedValue)
 		slog.Info("converted to field successfully", "field", reflectedFieldName, "value", convertedValue)
 		numFound++
-	}
-
-	// some of the provided parameters have been invalid
-	if numFound != len(params) {
-		return result, errors.New("invalid parameter(s)")
 	}
 
 	return result, nil
@@ -70,7 +62,7 @@ func GetModelSlicedFields[T any](model T) []SlicedField {
 		var slicedField = SlicedField{
 			Name:  reflectedFieldType.Name,
 			Value: reflectedFieldValue.Interface(),
-			Tag:   reflectedFieldType.Tag.Get(util.JSON_TAG),
+			Tag:   reflectedFieldType.Tag.Get(JSON_TAG),
 		}
 
 		slicedFields = append(slicedFields, slicedField)

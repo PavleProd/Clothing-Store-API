@@ -6,7 +6,7 @@ import (
 	"online_store_api/src/util"
 )
 
-func ConvertURL(request *http.Request) util.DataRecord {
+func ParseURL(request *http.Request) util.DataRecord {
 	var urlParams = request.URL.Query()
 	var result = util.DataRecord{}
 	for key, valueSlice := range urlParams {
@@ -20,7 +20,7 @@ func ConvertURL(request *http.Request) util.DataRecord {
 	return result
 }
 
-func ConvertBody(request *http.Request) (util.DataRecord, error) {
+func ParseBody(request *http.Request) (util.DataRecord, error) {
 	var result = util.DataRecord{}
 
 	var dataInterface = util.DataInterface{}
