@@ -9,7 +9,7 @@ import (
 // SELECT * FROM TABLE WHERE param1 = value1 AND param2 = value2
 func BuildSelectQuery(data util.DataRecord, tableName string) PreparedQuery {
 	var queryBuilder strings.Builder
-	var values []any
+	var values = []any{}
 
 	queryBuilder.WriteString("SELECT * FROM ")
 	queryBuilder.WriteString(tableName)
@@ -52,6 +52,7 @@ func BuildInsertQuery(data util.DataRecord, tableName string) PreparedQuery {
 
 	queryBuilder.WriteString("(" + strings.Join(keys, ",") + ")")
 
+	// PostgreSQL uses placeholders $1, $2, $3, ...
 	queryBuilder.WriteString(" VALUES(")
 	for i := range len(data) {
 		if i != 0 {

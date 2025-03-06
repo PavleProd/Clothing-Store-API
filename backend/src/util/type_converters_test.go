@@ -9,14 +9,14 @@ var testCasesConvertFromString = []struct {
 	name       string
 	value      string
 	expected   any
-	shouldFail bool
+	shouldPass bool
 }{
-	{"convert to bool", "false", false, false},
-	{"convert to negative int", "-10", -10, false},
-	{"convert to positive int", "10", 10, false},
-	{"convert to string", "test", "test", false},
-	{"convert to float", "3.14", 3.14, false},
-	{"invalid target int, value float", "3.14", 3, true},
+	{"ConvertToBool_Valid", "false", false, true},
+	{"ConvertToNegativeInt_Valid", "-10", -10, true},
+	{"ConverToPositiveInt_Valid", "10", 10, true},
+	{"ConvertToString_Valid", "test", "test", true},
+	{"ConvertToFloat_Valid", "3.14", 3.14, true},
+	{"ConvertToInt_InvalidFloatValue", "3.14", 3, false},
 }
 
 func TestConvertFromString(t *testing.T) {
@@ -26,15 +26,15 @@ func TestConvertFromString(t *testing.T) {
 
 			got, err := ConvertFromString(testcase.value, reflect.TypeOf(expected))
 
-			if testcase.shouldFail {
-				if err == nil {
-					t.Errorf("error expected, but got nil")
-				}
-			} else {
+			if testcase.shouldPass {
 				if err != nil {
 					t.Errorf("error message not expected: %v", err.Error())
 				} else if got.Interface() != expected {
-					t.Errorf("excpected %v, got %v", expected, got)
+					t.Errorf("expected %v, got %v", expected, got)
+				}
+			} else {
+				if err == nil {
+					t.Errorf("error expected, but got nil")
 				}
 			}
 		})

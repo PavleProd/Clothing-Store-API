@@ -1,31 +1,71 @@
 package db
 
 import (
-	"online_store_api/src/model"
+	"online_store_api/src/util"
+	"reflect"
+	"testing"
 )
 
-var testCasesBuildReadQuery = []struct {
+var testCasesBuildSelectQuery = []struct {
 	name       string
-	model      any
+	data       util.DataRecord
 	tableName  string
-	expected   string
-	shouldFail bool
+	expected   PreparedQuery
+	shouldPass bool
 }{
-	{"all default", model.Product{}, "products", "SELECT * FROM products", false},
+	{
+		"NoParams_Valid",
+		util.DataRecord{},
+		"products",
+		*NewPreparedQuery(
+			"SELECT * FROM products",
+			[]any{},
+		),
+		true,
+	},
+	{
+		"OneParam_Valid",
+		util.DataRecord{"name": "T Shirt"},
+		"products",
+		*NewPreparedQuery(
+			"SELECT * FROM products WHERE name = $1",
+			[]any{"T Shirt"},
+		),
+		true,
+	},
+	{
+		"OneParam_InvalidValuesSlice",
+		util.DataRecord{"name": "T Shirt"},
+		"products",
+		*NewPreparedQuery(
+			"SELECT * FROM products WHERE name = $1",
+			[]any{},
+		),
+		false,
+	},
+	{
+		"OneParam_InvalidQuery",
+		util.DataRecord{"name": "T Shirt"},
+		"products",
+		*NewPreparedQuery(
+			"SELECT * FROM products WHERE name = $2",
+			[]any{"T Shirt"},
+		),
+		false,
+	},
 }
 
-// TODO: fix tests when code is refactored
-// func TestBuildReadQuery(t *testing.T) {
-// 	for _, testcase := range testCasesBuildReadQuery {
-// 		t.Run(testcase.name, func(t *testing.T) {
-// 			expected := testcase.expected
+func TestBuildSelectQuery(t *testing.T) {
+	for _, testcase := range testCasesBuildSelectQuery {
+		t.Run(testcase.name, func(t *testing.T) {
+			expected := testcase.expected
 
-// 			got := BuildSelectQueryFromModel(testcase.model, testcase.tableName)
+			got := BuildSelectQuery(testcase.data, testcase.tableName)
 
-// 			// when testcase should pass then it's wrong that got is expected. Same logic when testcase should pass
-// 			if testcase.shouldFail != (got == expected) {
-// 				t.Errorf("got: %v, expected: %v", got, expected)
-// 			}
-// 		})
-// 	}
-// }
+			var isEqual bool = reflect.DeepEqual(got, expected)
+			if isEqual != testcase.shouldPass {
+				t.Errorf("got %v expected %v", got, expected)
+			}
+		})
+	}
+}
