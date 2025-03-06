@@ -24,3 +24,13 @@ CREATE TABLE users (
     password VARCHAR(100) NOT NULL,
     role INT NOT NULL
 );
+
+COPY products(name, category, size, gender, is_for_kids, price, quantity)
+FROM '/docker-entrypoint-initdb.d/products_init.csv'
+DELIMITER ','
+CSV HEADER;
+
+COPY users(username, password, role)
+FROM '/docker-entrypoint-initdb.d/users_init.csv'
+DELIMITER ','
+CSV HEADER;
