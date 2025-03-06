@@ -38,37 +38,22 @@ func ConvertFromString(value string, targetType reflect.Type) (reflect.Value, er
 	return reflectedValue.Convert(targetType), err
 }
 
-func IsDefaultOrZeroValueExcludingBool(value any) bool {
-	if reflect.TypeOf(value) == reflect.TypeOf(true) {
-		return false
+func ConvertToString(value any) (string, error) {
+	var result string
+
+	var reflectedValue = reflect.ValueOf(value)
+	switch reflectedValue.Kind() {
+	case reflect.String:
+		result = reflectedValue.String()
+	case reflect.Bool:
+		result = fmt.Sprint(reflectedValue.Bool())
+	case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Int:
+		result = fmt.Sprint(reflectedValue.Int())
+	case reflect.Float32, reflect.Float64:
+		result = fmt.Sprint(reflectedValue.Float())
+	default:
+		return "", fmt.Errorf("cannot convert %v to string", value)
 	}
 
-	return value == nil || reflect.DeepEqual(value, reflect.Zero(reflect.TypeOf(value)).Interface())
-}
-
-type SlicedField struct {
-	Name  string
-	Value any
-	Tag   string
-}
-
-func GetModelSlicedFields[T any](model T) []SlicedField {
-	var slicedFields []SlicedField
-
-	var reflectedModelValue = reflect.ValueOf(&model).Elem()
-	var reflectedModelType = reflectedModelValue.Type()
-	for i := range reflectedModelValue.NumField() {
-		var reflectedFieldType = reflectedModelType.Field(i)
-		var reflectedFieldValue = reflectedModelValue.Field(i)
-
-		var slicedField = SlicedField{
-			Name:  reflectedFieldType.Name,
-			Value: reflectedFieldValue.Interface(),
-			Tag:   reflectedFieldType.Tag.Get(JSON_TAG),
-		}
-
-		slicedFields = append(slicedFields, slicedField)
-	}
-
-	return slicedFields
+	return result, nil
 }

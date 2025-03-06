@@ -2,10 +2,10 @@ package data_proccessing
 
 import (
 	"encoding/json"
+	"log"
 	"log/slog"
 	"net/http"
 	"online_store_api/src/db"
-	"online_store_api/src/model"
 )
 
 type ProductsHandler struct {
@@ -49,12 +49,8 @@ func (handler *ProductsHandler) ServeHTTP(writer http.ResponseWriter, request *h
 }
 
 func (handler *ProductsHandler) handleGet(writer http.ResponseWriter, request *http.Request) (int, error) {
-	product, err := MapToModel[model.Product](request.URL.Query())
-	if err != nil {
-		return http.StatusBadRequest, err
-	}
-
-	query := db.BuildReadQuery(product, handler.tableName)
+	data := ConvertURL(request)
+	query := db.BuildSelectQuery(data, handler.tableName)
 
 	dataSet, err := handler.database.Read(query)
 	if err != nil {
@@ -70,20 +66,14 @@ func (handler *ProductsHandler) handleGet(writer http.ResponseWriter, request *h
 }
 
 func (handler *ProductsHandler) handlePost(writer http.ResponseWriter, request *http.Request) (int, error) {
-	var product model.Product
-
-	err := json.NewDecoder(request.Body).Decode(&product)
+	data, err := ConvertBody(request)
 	if err != nil {
 		slog.Error("json parse failed", "error", err.Error())
 		return http.StatusBadRequest, err
 	}
 
-	query, err := db.BuildInsertQuery(product, handler.tableName)
-	if err != nil {
-		slog.Error("building insert querty failed", "error", err.Error())
-		return http.StatusInternalServerError, err
-	}
-
+	query := db.BuildInsertQuery(data, handler.tableName)
+	log.Println(query)
 	err = handler.database.Write(query)
 	if err != nil {
 		slog.Error("database transaction failed", "error", err.Error())

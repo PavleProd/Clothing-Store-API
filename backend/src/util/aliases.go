@@ -2,6 +2,7 @@ package util
 
 import "os"
 
+type DataInterface = map[string]any
 type DataRecord = map[string]string
 type DataSet = []DataRecord
 

@@ -51,3 +51,30 @@ func MapToModel[T any](params url.Values) (T, error) {
 
 	return result, nil
 }
+
+type SlicedField struct {
+	Name  string
+	Value any
+	Tag   string
+}
+
+func GetModelSlicedFields[T any](model T) []SlicedField {
+	var slicedFields []SlicedField
+
+	var reflectedModelValue = reflect.ValueOf(&model).Elem()
+	var reflectedModelType = reflectedModelValue.Type()
+	for i := range reflectedModelValue.NumField() {
+		var reflectedFieldType = reflectedModelType.Field(i)
+		var reflectedFieldValue = reflectedModelValue.Field(i)
+
+		var slicedField = SlicedField{
+			Name:  reflectedFieldType.Name,
+			Value: reflectedFieldValue.Interface(),
+			Tag:   reflectedFieldType.Tag.Get(util.JSON_TAG),
+		}
+
+		slicedFields = append(slicedFields, slicedField)
+	}
+
+	return slicedFields
+}
