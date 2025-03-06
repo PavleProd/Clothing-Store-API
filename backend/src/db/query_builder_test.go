@@ -7,11 +7,10 @@ import (
 )
 
 var testCasesBuildSelectQuery = []struct {
-	name       string
-	data       util.DataRecord
-	tableName  string
-	expected   PreparedQuery
-	shouldPass bool
+	name      string
+	data      util.DataRecord
+	tableName string
+	expected  PreparedQuery
 }{
 	{
 		"NoParams_Valid",
@@ -21,7 +20,6 @@ var testCasesBuildSelectQuery = []struct {
 			"SELECT * FROM products",
 			[]any{},
 		),
-		true,
 	},
 	{
 		"OneParam_Valid",
@@ -31,27 +29,6 @@ var testCasesBuildSelectQuery = []struct {
 			"SELECT * FROM products WHERE name = $1",
 			[]any{"T Shirt"},
 		),
-		true,
-	},
-	{
-		"OneParam_InvalidValuesSlice",
-		util.DataRecord{"name": "T Shirt"},
-		"products",
-		*NewPreparedQuery(
-			"SELECT * FROM products WHERE name = $1",
-			[]any{},
-		),
-		false,
-	},
-	{
-		"OneParam_InvalidQuery",
-		util.DataRecord{"name": "T Shirt"},
-		"products",
-		*NewPreparedQuery(
-			"SELECT * FROM products WHERE name = $2",
-			[]any{"T Shirt"},
-		),
-		false,
 	},
 }
 
@@ -62,8 +39,7 @@ func TestBuildSelectQuery(t *testing.T) {
 
 			got := BuildSelectQuery(testcase.data, testcase.tableName)
 
-			var isEqual bool = reflect.DeepEqual(got, expected)
-			if isEqual != testcase.shouldPass {
+			if !reflect.DeepEqual(got, expected) {
 				t.Errorf("got %v expected %v", got, expected)
 			}
 		})
