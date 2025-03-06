@@ -25,7 +25,8 @@ Web-Server was implemented using pure GO. Only external library is a driver for 
 Some of the implemented functionalities:
 
 - Converter from HTTP request to any data model, including HTTP request validator
-- Automatic SQL query builder from data model
+- Simplified ORM with query builders with
+- Prepared Statements for PostgreSQL to prevent SQL Injection
 
 ## API
 
